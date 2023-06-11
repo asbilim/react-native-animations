@@ -1,139 +1,81 @@
-import { ScrollView } from "react-native-gesture-handler";
-import { View,Animated,Text,FlatList,ImageBackground,Dimensions,Image,SafeAreaView } from "react-native";
-import bg from "../assets/bg.jpg"
-import {COLORS} from "../constants/colors"
-import { BlurView } from "expo-blur";
-import {faker} from "@faker-js/faker"
-import { StatusBar } from "expo-status-bar";
-import { useRef } from "react";
-
-
-const DATA = [...Array(30).keys()].map(() =>{
-    
-    const randomNumber = Math.floor(Math.random()*2)
-    randomImage = Math.floor(Math.random()*31)
-    const array = ['women',"men"]
-    
-    return (
-        {
-            key: faker.animal.bird(),
-            name:faker.person.firstName(),
-            jobTitle:faker.person.jobTitle(),
-            email:faker.internet.email(),
-            id:faker.phone,
-            image: `https://randomuser.me/api/portraits/${array[randomNumber]}/${randomImage}.jpg`,
-        
-        }
-    )
-} );
-
+import { MotiView,MotiText,AnimatePresence} from "moti";
+import { Dimensions } from "react-native";
+import { useState } from "react";
 
 export default function Main(){
+    
+    const [isLoading,setIsLoading] = useState(isLoading=>true)
 
-    const {width, height} = Dimensions.get('screen')
-    const scrollY = useRef(new Animated.Value(0)).current
-    const ITEM_SIZE = height > 810 ? 110 : 130
-    console.log(height)
-    console.log(ITEM_SIZE)
+    const sleep = async (time)=>{
+        return new Promise((resolve,reject)=>{
+            setTimeout(resolve,1000*time)
+        })
+    }
 
-    return (
-        
-        <SafeAreaView style={{flex:1}}>
-            <StatusBar hidden />
-            <BlurView
-                intensity={100}
-                style={{
-                    width:"100%",
-                    position:"absolute",
-                    top:0,
-                    height:height
+    const {width,height} = Dimensions.get('screen')
+
+    const Skeleton = ()=>{
+        return (
+            <MotiView
+                style={{flex:1,height:height,flexDirection:'row',flexWrap:'wrap',justifyContent:"space-around",alignItems:"center",padding:20,gap:20}}
+                from={{width:0}}
+                animate={{width:"100%"}}
+                exit={{translateX:4000,opacity:0}}
+                transition={{
+                    duration:200
                 }}
             >
-                <ImageBackground 
-                    source={bg}
-                    style={{resizeMode:"contain",flex:1}}
-                    blurRadius={20}
+                <MotiView style={{width:100,height:100,backgroundColor:"gray",borderRadius:25}} from={{opacity:0.4}} animate={{opacity:1}} transition={{duration:900,loop:true,type:"timing",repeatReverse:true}}></MotiView>
+                <MotiView style={{width:100,height:100,backgroundColor:"gray",borderRadius:25}} from={{opacity:0.4}} animate={{opacity:1}} transition={{duration:900,loop:true,type:"timing",repeatReverse:true}}></MotiView>
+                <MotiView style={{width:100,height:100,backgroundColor:"gray",borderRadius:25}} from={{opacity:0.4}} animate={{opacity:1}} transition={{duration:900,loop:true,type:"timing",repeatReverse:true}}></MotiView>
+                <MotiView style={{width:100,height:100,backgroundColor:"gray",borderRadius:25}} from={{opacity:0.4}} animate={{opacity:1}} transition={{duration:900,loop:true,type:"timing",repeatReverse:true}}></MotiView>
+                <MotiView style={{width:100,height:100,backgroundColor:"gray",borderRadius:25}} from={{opacity:0.4}} animate={{opacity:1}} transition={{duration:900,loop:true,type:"timing",repeatReverse:true}}></MotiView>
+                <MotiView style={{width:100,height:100,backgroundColor:"gray",borderRadius:25}} from={{opacity:0.4}} animate={{opacity:1}} transition={{duration:900,loop:true,type:"timing",repeatReverse:true}}></MotiView>
+                <MotiView style={{width:100,height:100,backgroundColor:"gray",borderRadius:25}} from={{opacity:0.4}} animate={{opacity:1}} transition={{duration:900,loop:true,type:"timing",repeatReverse:true}}></MotiView>
+                <MotiView style={{width:100,height:100,backgroundColor:"gray",borderRadius:25}} from={{opacity:0.4}} animate={{opacity:1}} transition={{duration:900,loop:true,type:"timing",repeatReverse:true}}></MotiView>
+                <MotiView style={{width:100,height:100,backgroundColor:"gray",borderRadius:25}} from={{opacity:0.4}} animate={{opacity:1}} transition={{duration:900,loop:true,type:"timing",repeatReverse:true}}></MotiView>
+                <MotiView style={{width:100,height:100,backgroundColor:"gray",borderRadius:25}} from={{opacity:0.4}} animate={{opacity:1}} transition={{duration:900,loop:true,type:"timing",repeatReverse:true}}></MotiView>
+
+            </MotiView>
+        )
+    }
+
+    return (
+        <AnimatePresence
+
+        >
+            {
+                isLoading?(
+                    <Skeleton />
+                ):(
+
+                <MotiView
+                    style={{
+                        flex:1,
+                        alignItems:"center",
+                        justifyContent:"center"
+                    }}
+                    from={{opacity:0,scale:0.5}}
+                    animate={{opacity:1,scale:1}}
+                    transition={{
+                        type:"timing",
+                        duration:2000
+                    }}
                 >
-                        <Animated.FlatList  
-                            data={DATA}
-                            keyExtractor={item=>item.phone}
-                            contentContainerStyle={{
-                                padding:20,
-                                paddingTop:StatusBar.currentHeight||42
-                            }}
-                            onScroll={Animated.event(
-                                [
-                                    {
-                                        nativeEvent:{contentOffset:{y:scrollY}}
-                                    }
-                                ],
-                                {
-                                    useNativeDriver:true,
-                                }
-                            )}
-                            renderItem={({item,index})=>{
+                    <MotiText
+                        style={{fontSize:44,fontWeight:600,textAlign:"center"}}
+                        from={{translateX:-4100}}
+                        animate={{translateX:0}}
+                        exit={{translateX:400}}
+                        transition={{
+                            duration:200,
 
-                                const input_range = [
-                                    -1,0,ITEM_SIZE*index,ITEM_SIZE*(index+2)
-                                ]
-
-                                const scale = scrollY.interpolate({
-                                    inputRange:input_range,
-                                    outputRange:[1,1,1,0]
-
-                                })
-
-                                const opacity = scrollY.interpolate({
-                                    inputRange:input_range,
-                                    outputRange:[1,1,1,0]
-
-                                })
-
-                                return (
-                                <Animated.View
-                                    style={{
-                                        backgroundColor:"white",
-                                        marginVertical:15,
-                                        justifyContent:"space-around",
-                                        padding:10,
-                                        gap:10,
-                                        alignItems:"center",
-                                        flex:1,
-                                        flexDirection:"row",
-                                        marginHorizontal:25,
-                                        borderRadius:10,
-                                        shadowColor:COLORS.black,
-                                        shadowOffset:{
-                                            width:0,
-                                            height:10
-                                        },
-                                        shadowRadius:20,
-                                        transform:[{scale}],
-                                        opacity
-                                    }}
-                                    key={index}
-                                >
-                                    <Image source={{uri:item.image}} style={{width:50,height:50,borderRadius:25,resizeMode:"contain",backgroundColor:COLORS.orange}} />
-                                    <View 
-                                        style={{flex:1,justifyContent:"flex-end",alignItems:"center",gap:4}}
-                                    >
-                                        <Text style={{fontSize:18,fontWeight:600,color:COLORS.black}}>{item.name}</Text>
-                                        <Text style={{fontSize:14,fontWeight:400,color:COLORS.black}}>{item.email}</Text>
-                                        <Text style={{fontSize:14,fontWeight:400,color:COLORS.primary}}>{item.jobTitle}</Text>
-                                    </View>
-                                </Animated.View>
-                                )
-                            }
-                            }
-                        />
-                    
-                </ImageBackground>
-
-            </BlurView>
-            
-        </SafeAreaView>
-
-     
+                        }}
+                    >hello world we welcome You</MotiText>
+                </MotiView>
+                )
+            }
+        </AnimatePresence>
     )
 
 }
